@@ -46,5 +46,5 @@ The bat will build the js/css with webpack (vue-cli), then Package the plugin wi
 
 https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/tags
 
-Download the latest release, and run the com.marlburrow.uptime-kuma.streamDeckPlugin file.
+Download the latest release, and run the `com.marlburrow.uptime-kuma.streamDeckPlugin` file.
 
