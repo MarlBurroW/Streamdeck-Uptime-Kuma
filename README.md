@@ -1,6 +1,6 @@
 # Streamdeck Uptime Kuma
 
-Unofficial Uptime Kuma plugin for Elgato Streamdeck.
+Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elgato Streamdeck.
 
 ![Screenshot](https://i.imgur.com/hwNjDdi.png)
 ![Photo](https://i.imgur.com/fwnlxzs.png)
