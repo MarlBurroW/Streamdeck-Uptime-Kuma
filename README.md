@@ -13,7 +13,7 @@ Unofficial Uptime Kuma plugin for Elgato Streamdeck.
   * The uptime during last 24 hours
   * The uptime during last 30 days
 * Info displayed can be changed by pressing the button (switch between average ping, uptime 24h, uptime 30d)
-* The plugin use the Uptime Kuma SocketIO API so monitor's states are instantly synced with the server.
+* The plugin use the Uptime Kuma SocketIO interface (like the official frontend) so monitor's states are instantly synced with the server.
 
 ## Feedbacks required
 
