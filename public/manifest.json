@@ -1,0 +1,43 @@
+{
+  "Actions": [
+    {
+      "Icon": "action/images/logo",
+      "Name": "Monitor",
+      "PropertyInspectorPath": "pi.html",
+      "States": [
+        {
+          "Image": "action/images/logo",
+          "TitleAlignment": "top",
+          "FontSize": "8",
+          "Title": "Service\r\nName"
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "View the states of a Uptime Kuma monitors",
+      "UUID": "com.marlburrow.uptime-kuma.monitor"
+    }
+  ],
+  "SDKVersion": 2,
+  "Author": "MarlburroW",
+  "CodePath": "plugin.html",
+  "Description": "Display your Uptime Kuma monitors on your streamdeck",
+  "Name": "Uptime Kuma",
+  "Icon": "action/images/logo",
+  "Category": "Uptime Kuma",
+  "CategoryIcon": "action/images/logo",
+  "URL": "https://www.elgato.com/en/gaming/stream-deck",
+  "Version": "1.0.0",
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "10.11"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Software": {
+    "MinimumVersion": "4.1"
+  }
+}
