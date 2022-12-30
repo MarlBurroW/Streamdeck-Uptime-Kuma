@@ -18,7 +18,7 @@ Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elg
 ## Feedbacks required
 
 The plugin has not been submitted to the Elgato plugin store because I need Feedbacks before.
-I also need approval from Uptime Kuma development team.
+I also need approval from the [https://github.com/louislam](Uptime Kuma developer).
 
 Don't hesitate to create some issues if you have any problems or have any suggestions to improve this plugin.
 
