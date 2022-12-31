@@ -1,8 +1,9 @@
 # Streamdeck Uptime Kuma
 
-Unofficial Uptime Kuma plugin for Elgato Streamdeck.
+Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elgato Streamdeck.
 
 ![Screenshot](https://i.imgur.com/hwNjDdi.png)
+![Photo](https://i.imgur.com/fwnlxzs.png)
 
 ## Features
 
@@ -12,12 +13,12 @@ Unofficial Uptime Kuma plugin for Elgato Streamdeck.
   * The uptime during last 24 hours
   * The uptime during last 30 days
 * Info displayed can be changed by pressing the button (switch between average ping, uptime 24h, uptime 30d)
-* The plugin use the Uptime Kuma SocketIO API so monitor's states are instantly synced with the server.
+* The plugin use the Uptime Kuma SocketIO interface (like the official frontend) so monitor's states are instantly synced with the server.
 
 ## Feedbacks required
 
 The plugin has not been submitted to the Elgato plugin store because I need Feedbacks before.
-I also need approval from Uptime Kuma development team.
+I also need approval from the [Uptime Kuma developer](https://github.com/louislam).
 
 Don't hesitate to create some issues if you have any problems or have any suggestions to improve this plugin.
 
@@ -43,4 +44,8 @@ You can build the plugin from source (Only on windows because the Elgato Distrib
 The bat will build the js/css with webpack (vue-cli), then Package the plugin with the DistributionTool, then execute the plugin.
 
 ### Download the release directly
+
+https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/tags
+
+Download the latest release, and run the `com.marlburrow.uptime-kuma.streamDeckPlugin` file.
 
