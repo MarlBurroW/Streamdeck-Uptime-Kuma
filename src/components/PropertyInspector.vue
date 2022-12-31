@@ -111,6 +111,24 @@
       </select>
     </div>
 
+    <div class="sdpi-item">
+      <div class="sdpi-item-label">Action</div>
+      <select
+        :disabled="monitorLoading"
+        v-model="action"
+        class="sdpi-item-value select"
+        @change="saveSettings"
+      >
+        <option
+          v-for="buttonAction in buttonActions"
+          :key="buttonAction.val"
+          :value="buttonAction.val"
+        >
+          {{ buttonAction.name }}
+        </option>
+      </select>
+    </div>
+
     <!-- END OF SDPI-WRAPPER -->
   </div>
 </template>
@@ -159,7 +177,9 @@ export default {
       if (settings.payload.settings.password) {
         this.password = settings.payload.settings.password;
       }
-
+      if (settings.payload.settings.action) {
+        this.action = settings.payload.settings.action;
+      }
       this.fetchMonitors();
     });
   },
@@ -232,17 +252,22 @@ export default {
       this.pi.setSettings({
         monitorId: this.monitorId,
         info: this.info,
+        action: this.action,
       });
     },
     getGlobalSettings(settings) {
       this.pi.getGlobalSettings();
     },
     saveGlobalSettings() {
-      this.pi.setGlobalSettings({
+      const newSettings = {
         url: this.url,
         username: this.username,
         password: this.password,
-      });
+      };
+
+      this.pi.setGlobalSettings(newSettings);
+
+      this.initialGlobalSettings = newSettings;
 
       this.success = "Connection settings saved";
 
@@ -257,6 +282,7 @@ export default {
       password: null,
       monitorId: null,
       info: "avgPing",
+      action: "nextInfo",
       error: null,
       success: null,
       loading: false,
@@ -265,10 +291,24 @@ export default {
       monitorLoading: false,
       monitors: [],
       testOk: false,
+      buttonActions: [
+        {
+          val: "nextInfo",
+          name: "Display next info",
+        },
+        {
+          val: "togglePause",
+          name: "Toggle Pause/Resume",
+        },
+      ],
       infos: [
         {
           val: "avgPing",
           name: "Average ping",
+        },
+        {
+          val: "ping",
+          name: "Current ping",
         },
         {
           val: "uptime24h",

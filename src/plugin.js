@@ -1,9 +1,5 @@
 import UptimeKuma from "./modules/uptime-kuma";
-import {
-  serviceDownImage,
-  serviceUpImage,
-  serviceUnknownImage,
-} from "./modules/images";
+import { statusImage } from "./modules/images";
 
 let kuma = null;
 let globalSettings = null;
@@ -39,20 +35,46 @@ $SD.on("com.marlburrow.uptime-kuma.monitor.keyDown", (payload) => {
 
   if (action) {
     const settings = action.payload?.settings;
+    const monitor = monitors[settings.monitorId];
 
     if (settings) {
-      switch (settings.info) {
-        case "avgPing":
-          settings.info = "uptime24h";
-          break;
-        case "uptime24h":
-          settings.info = "uptime30d";
-          break;
-        case "uptime30d":
-          settings.info = "avgPing";
-          break;
-        default:
-          settings.info = "avgPing";
+      if (settings.action == "togglePause") {
+        if (monitor) {
+          if (monitor.active) {
+            kuma.pauseMonitor(monitor.id, (result) => {
+              if (result.ok) {
+                $SD.showOk(action.context);
+              } else {
+                $SD.showAlert(action.context);
+              }
+            });
+          } else {
+            kuma.resumeMonitor(monitor.id, (result) => {
+              if (result.ok) {
+                $SD.showOk(action.context);
+              } else {
+                $SD.showAlert(action.context);
+              }
+            });
+          }
+        }
+      } else {
+        switch (settings.info) {
+          case "avgPing":
+            settings.info = "ping";
+            break;
+          case "ping":
+            settings.info = "uptime24h";
+            break;
+          case "uptime24h":
+            settings.info = "uptime30d";
+            break;
+          case "uptime30d":
+            settings.info = "avgPing";
+            break;
+          default:
+            settings.info = "avgPing";
+        }
       }
     }
 
@@ -94,9 +116,7 @@ $SD.on("didReceiveGlobalSettings", (settings) => {
     showAlertOnAllActions();
   });
 
-  kuma.on("authenticated", () => {
-    console.log("Authentified on Kuma WS");
-  });
+  kuma.on("authenticated", () => {});
 
   kuma.on("monitorList", (monitorList) => {
     for (let monitorId in monitorList) {
@@ -106,10 +126,12 @@ $SD.on("didReceiveGlobalSettings", (settings) => {
         monitors[monitor.id] = {
           id: monitor.id,
           name: monitor.name,
+          active: monitor.active,
         };
       } else {
         monitors[monitor.id].name = monitor.name;
         monitors[monitor.id].id = monitor.id;
+        monitors[monitor.id].active = monitor.active;
       }
     }
 
@@ -196,37 +218,49 @@ function updateActionDisplay(context) {
     const monitor = monitors[action.payload.settings.monitorId];
 
     if (monitor) {
-      if (monitor.heartbeat) {
+      if (!monitor.active) {
+        $SD.setImage(action.context, statusImage("PAUSED", "", "#D97706"));
+      } else if (monitor.heartbeat) {
         if (monitor.heartbeat.status) {
           let text = "";
-          let fontSize = 22;
+
+          let info = "";
+
           switch (action?.payload?.settings?.info) {
             case "avgPing":
               text = (monitor.avgPing ? monitor.avgPing : "--") + "ms";
+              info = "Avg (24h)";
+              break;
+            case "ping":
+              text =
+                (monitor.heartbeat?.ping ? monitor.heartbeat.ping : "--") +
+                "ms";
+              info = "Current";
               break;
             case "uptime24h":
               text =
                 (monitor.uptime24h ? formatPercent(monitor.uptime24h) : "--") +
-                "% (24h)";
-              fontSize = 14;
+                "%";
+              info = "24 hours";
               break;
             case "uptime30d":
               text =
                 (monitor.uptime30d ? formatPercent(monitor.uptime30d) : "--") +
-                "% (30d)";
-              fontSize = 14;
+                "%";
+              info = "30 days";
+
               break;
             default:
               text = (monitor.avgPing ? monitor.avgPing : "--") + "ms";
               break;
           }
 
-          $SD.setImage(action.context, serviceUpImage(text, fontSize));
+          $SD.setImage(action.context, statusImage(text, info, "#2bbc5e"));
         } else {
-          $SD.setImage(action.context, serviceDownImage("DOWN"));
+          $SD.setImage(action.context, statusImage("DOWN", null, "red"));
         }
       } else {
-        $SD.setImage(action.context, serviceUnknownImage("No state", 16));
+        $SD.setImage(action.context, statusImage("Waiting", "for status"));
       }
     }
   }

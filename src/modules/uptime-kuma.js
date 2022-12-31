@@ -69,9 +69,9 @@ class UptimeKuma extends EventEmitter {
         });
       });
 
-      this.socket.onAny((eventName) => {
-        console.log(eventName);
-      });
+      // this.socket.onAny((eventName) => {
+      //   console.log(eventName);
+      // });
     });
   }
 
@@ -99,6 +99,14 @@ class UptimeKuma extends EventEmitter {
         }
       }
     );
+  }
+
+  pauseMonitor(monitorID, CB = () => {}) {
+    this.socket.emit("pauseMonitor", parseInt(monitorID), CB);
+  }
+
+  resumeMonitor(monitorID, CB = () => {}) {
+    this.socket.emit("resumeMonitor", parseInt(monitorID), CB);
   }
 }
 
