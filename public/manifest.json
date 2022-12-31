@@ -13,20 +13,20 @@
         }
       ],
       "SupportedInMultiActions": false,
-      "Tooltip": "View the states of a Uptime Kuma monitors",
+      "Tooltip": "Display information about a monitor and/or pause/resume it",
       "UUID": "com.marlburrow.uptime-kuma.monitor"
     }
   ],
   "SDKVersion": 2,
-  "Author": "MarlburroW",
+  "Author": "Nicolas Varrot (MarlburroW)",
   "CodePath": "plugin.html",
-  "Description": "Display your Uptime Kuma monitors on your streamdeck",
+  "Description": "Display your Uptime Kuma monitors information on your streamdeck and pause/resume them.",
   "Name": "Uptime Kuma",
   "Icon": "action/images/logo",
   "Category": "Uptime Kuma",
   "CategoryIcon": "action/images/logo",
   "URL": "https://www.elgato.com/en/gaming/stream-deck",
-  "Version": "1.0.0",
+  "Version": "1.1.1",
   "OS": [
     {
       "Platform": "mac",
