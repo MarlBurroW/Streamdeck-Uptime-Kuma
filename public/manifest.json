@@ -1,12 +1,12 @@
 {
   "Actions": [
     {
-      "Icon": "action/images/logo",
+      "Icon": "images/actions/monitor/action",
       "Name": "Monitor",
       "PropertyInspectorPath": "pi.html",
       "States": [
         {
-          "Image": "action/images/logo",
+          "Image": "logo",
           "TitleAlignment": "top",
           "FontSize": "8",
           "Title": "Service\r\nName"
@@ -22,9 +22,9 @@
   "CodePath": "plugin.html",
   "Description": "Display your Uptime Kuma monitors information on your streamdeck and pause/resume them.",
   "Name": "Uptime Kuma",
-  "Icon": "action/images/logo",
+  "Icon": "logo",
   "Category": "Uptime Kuma",
-  "CategoryIcon": "action/images/logo",
+  "CategoryIcon": "images/category/category",
   "URL": "https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma",
   "Version": "1.1.1",
   "OS": [
