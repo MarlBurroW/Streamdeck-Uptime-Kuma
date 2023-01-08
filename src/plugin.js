@@ -1,9 +1,16 @@
 import UptimeKuma from "./modules/uptime-kuma";
 import { statusImage } from "./modules/images";
 
+// Will contains the current UptimeKuma instance
 let kuma = null;
+
+// Will contians the plugin global settings
 let globalSettings = null;
+
+// Will contains all monitors managed by Uptime Kuma
 let monitors = {};
+
+// Will contains all actions (buttons) displayed on the current streamdeck screen
 let actions = {};
 
 $SD.on("connected", (payload) => {
@@ -19,6 +26,10 @@ $SD.on("com.marlburrow.uptime-kuma.monitor.didReceiveSettings", (payload) => {
   };
 
   updateActionDisplay(payload.context);
+});
+
+$SD.on("com.marlburrow.uptime-kuma.monitor.willDisappear", (payload) => {
+  delete actions[payload.context];
 });
 
 $SD.on("com.marlburrow.uptime-kuma.monitor.willAppear", (payload) => {
@@ -83,102 +94,120 @@ $SD.on("com.marlburrow.uptime-kuma.monitor.keyDown", (payload) => {
   }
 });
 
-$SD.on("com.marlburrow.uptime-kuma.monitor.willDisappear", (payload) => {
-  delete actions[payload.context];
-});
-
 $SD.on("didReceiveGlobalSettings", (settings) => {
   globalSettings = settings.payload.settings;
 
+  // Disconnect previous socket if exists
   if (kuma) {
     kuma.disconnect();
   }
 
-  kuma = new UptimeKuma(
-    globalSettings.url,
-    globalSettings.username,
+  // Check if connection settings are filled before connect the socket
+  if (
+    globalSettings.url &&
+    globalSettings.username &&
     globalSettings.password
-  );
+  ) {
+    // Instantiate a new kuma module.
 
-  kuma.connect();
+    kuma = new UptimeKuma(
+      globalSettings.url,
+      globalSettings.username,
+      globalSettings.password
+    );
 
-  kuma.on("connected", () => {
-    showOkOnAllActions();
+    // Connect the module
 
-    kuma.authenticate();
-  });
+    kuma.connect();
 
-  kuma.on("error", () => {
-    showAlertOnAllActions();
-  });
+    kuma.on("connected", () => {
+      showOkOnAllActions();
+      kuma.authenticate();
+    });
 
-  kuma.on("disconnect", () => {
-    showAlertOnAllActions();
-  });
+    // On any error emmitted by the kuma module, show warning on all buttons
+    kuma.on("error", () => {
+      showAlertOnAllActions();
+    });
 
-  kuma.on("authenticated", () => {});
+    // When the socket is disconnected, show arning on all buttons
+    kuma.on("disconnect", () => {
+      showAlertOnAllActions();
+    });
 
-  kuma.on("monitorList", (monitorList) => {
-    for (let monitorId in monitorList) {
-      const monitor = monitorList[monitorId];
+    // When the socket is authenticated
+    kuma.on("authenticated", () => {
+      // Nothing to do here.
+    });
 
-      if (!monitors[monitor.id]) {
-        monitors[monitor.id] = {
-          id: monitor.id,
-          name: monitor.name,
-          active: monitor.active,
-        };
-      } else {
-        monitors[monitor.id].name = monitor.name;
-        monitors[monitor.id].id = monitor.id;
-        monitors[monitor.id].active = monitor.active;
+    // When the server send the list of all monitors
+    kuma.on("monitorList", (monitorList) => {
+      for (let monitorId in monitorList) {
+        const monitor = monitorList[monitorId];
+
+        if (!monitors[monitor.id]) {
+          monitors[monitor.id] = {
+            id: monitor.id,
+            name: monitor.name,
+            active: monitor.active,
+          };
+        } else {
+          monitors[monitor.id].name = monitor.name;
+          monitors[monitor.id].id = monitor.id;
+          monitors[monitor.id].active = monitor.active;
+        }
       }
-    }
 
-    updateAllActionsDisplay();
-  });
+      updateAllActionsDisplay();
+    });
 
-  kuma.on("heartbeat", (payload) => {
-    if (monitors[payload.monitorID]) {
-      monitors[payload.monitorID].heartbeat = payload;
-    }
-
-    updateActionsDisplayUsingMonitor(payload.monitorID);
-  });
-
-  kuma.on("avgPing", (payload) => {
-    if (monitors[payload.monitorID]) {
-      monitors[payload.monitorID].avgPing = payload.avgPing;
-    }
-
-    updateActionsDisplayUsingMonitor(payload.monitorID);
-  });
-
-  kuma.on("uptime", (payload) => {
-    if (monitors[payload.monitorID]) {
-      if (payload.period === 24) {
-        monitors[payload.monitorID].uptime24h = payload.percent;
+    // When the server send a heartbeat for a specific monitor
+    kuma.on("heartbeat", (payload) => {
+      if (monitors[payload.monitorID]) {
+        monitors[payload.monitorID].heartbeat = payload;
       }
-      if (payload.period === 720) {
-        monitors[payload.monitorID].uptime30d = payload.percent;
+
+      updateActionsDisplayUsingMonitor(payload.monitorID);
+    });
+
+    // When the server return the average ping of a specific monitor.
+
+    kuma.on("avgPing", (payload) => {
+      if (monitors[payload.monitorID]) {
+        monitors[payload.monitorID].avgPing = payload.avgPing;
       }
-    }
 
-    updateActionsDisplayUsingMonitor(payload.monitorID);
-  });
+      updateActionsDisplayUsingMonitor(payload.monitorID);
+    });
 
-  kuma.on("heartbeatList", (payload) => {
-    const monitor = monitors[payload.monitorID];
-
-    if (monitor) {
-      monitor.heartbeatList = payload.heartbeatList;
-      if (payload.heartbeatList.length > 0) {
-        monitor.heartbeat = payload.heartbeatList.at(-1);
+    // When the server return uptime information of a specific monitor
+    kuma.on("uptime", (payload) => {
+      if (monitors[payload.monitorID]) {
+        if (payload.period === 24) {
+          monitors[payload.monitorID].uptime24h = payload.percent;
+        }
+        if (payload.period === 720) {
+          monitors[payload.monitorID].uptime30d = payload.percent;
+        }
       }
-    }
 
-    updateActionsDisplayUsingMonitor(payload.monitorID);
-  });
+      updateActionsDisplayUsingMonitor(payload.monitorID);
+    });
+
+    // When the server return the heartbeat state of all monitors
+    kuma.on("heartbeatList", (payload) => {
+      const monitor = monitors[payload.monitorID];
+
+      if (monitor) {
+        monitor.heartbeatList = payload.heartbeatList;
+        if (payload.heartbeatList.length > 0) {
+          monitor.heartbeat = payload.heartbeatList.at(-1);
+        }
+      }
+
+      updateActionsDisplayUsingMonitor(payload.monitorID);
+    });
+  }
 });
 
 function showAlertOnAllActions() {
@@ -204,13 +233,10 @@ function updateAllActionsDisplay() {
 
 function formatPercent(percent) {
   percent = parseFloat(percent) * 100;
-  return percent.toLocaleString(
-    undefined, // leave undefined to use the visitor's browser
-    // locale or a string like 'en-US' to override it.
-    { maximumFractionDigits: 1 }
-  );
+  return percent.toLocaleString(undefined, { maximumFractionDigits: 1 });
 }
 
+// Unique function responsible of display the image of the action (according action settings and corresponding monitor state)
 function updateActionDisplay(context) {
   const action = actions[context];
 

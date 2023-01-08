@@ -201,23 +201,25 @@ export default {
   },
   methods: {
     fetchMonitors() {
-      const kuma = new UptimeKuma(this.url, this.username, this.password);
-      kuma.connect();
-      this.monitorLoading = true;
+      if (this.url && this.username && this.password) {
+        const kuma = new UptimeKuma(this.url, this.username, this.password);
+        kuma.connect();
+        this.monitorLoading = true;
 
-      kuma.on("connected", () => {
-        kuma.authenticate();
-      });
+        kuma.on("connected", () => {
+          kuma.authenticate();
+        });
 
-      kuma.on("monitorList", (monitors) => {
-        this.monitors = monitors;
-        kuma.disconnect();
-        this.monitorLoading = false;
-      });
+        kuma.on("monitorList", (monitors) => {
+          this.monitors = monitors;
+          kuma.disconnect();
+          this.monitorLoading = false;
+        });
 
-      kuma.on("error", (err) => {
-        this.monitorLoading = false;
-      });
+        kuma.on("error", (err) => {
+          this.monitorLoading = false;
+        });
+      }
     },
 
     testConnection() {
@@ -225,25 +227,27 @@ export default {
       this.success = null;
       this.loading = true;
 
-      const kuma = new UptimeKuma(this.url, this.username, this.password);
-      kuma.connect();
+      if (this.url && this.username && this.password) {
+        const kuma = new UptimeKuma(this.url, this.username, this.password);
+        kuma.connect();
 
-      kuma.on("connected", () => {
-        kuma.authenticate();
-      });
+        kuma.on("connected", () => {
+          kuma.authenticate();
+        });
 
-      kuma.on("authenticated", (token) => {
-        this.success = "Test successful";
-        this.loading = false;
-        this.testOk = true;
-        kuma.disconnect();
-      });
+        kuma.on("authenticated", (token) => {
+          this.success = "Test successful";
+          this.loading = false;
+          this.testOk = true;
+          kuma.disconnect();
+        });
 
-      kuma.on("error", (err) => {
-        this.error = `Test failed: ${err}`;
-        this.loading = false;
-        kuma.disconnect();
-      });
+        kuma.on("error", (err) => {
+          this.error = `Test failed: ${err}`;
+          this.loading = false;
+          kuma.disconnect();
+        });
+      }
     },
     getSettings() {
       this.pi.getSettings();
