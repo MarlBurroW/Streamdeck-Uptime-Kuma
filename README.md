@@ -13,8 +13,8 @@ Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elg
     * Red -> Down
     * Orange -> Paused
     * Grey -> Unkown status (waiting for the first status).
-  * The current ping (ping of the last heartbeat).
-  * The average ping in microseconds.
+  * The current ping in ms (ping of the last heartbeat).
+  * The average ping in ms (on last 24 hours)
   * The uptime during last 24 hours.
   * The uptime during last 30 days.
 * Info displayed can be changed by pressing the button (switch between average ping, uptime 24h, uptime 30d).
