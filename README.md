@@ -26,6 +26,15 @@ Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elg
 * Add long press action binding https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/4
 * Connect the socket only if actions are displayed on the current screen https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/3
 
+## Installation
+
+### From the Elgato Streamdeck Store
+
+Plugin submitted to the Elgato team, awaiting publication.
+
+### Download the release directly
+
+Download the [latest release](https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/releases/latest), and run the `com.marlburrow.uptime-kuma.streamDeckPlugin` file.
 
 ### Build from source
 You can build the plugin from source (Only on windows because the Elgato DistributionTool is needed):
@@ -44,9 +53,6 @@ You can build the plugin from source (Only on windows because the Elgato Distrib
 
 The bat will build the js/css with webpack (vue-cli), then Package the plugin with the DistributionTool, then execute the plugin.
 
-### Download the release directly
-
-Download the [latest release](https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/releases/latest), and run the `com.marlburrow.uptime-kuma.streamDeckPlugin` file.
 
 ## Troubleshooting
 
