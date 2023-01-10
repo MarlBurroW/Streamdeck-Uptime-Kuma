@@ -52,3 +52,6 @@ Download the [latest release](https://github.com/MarlBurroW/Streamdeck-Uptime-Ku
 
 * CORS error resulting to `xhr poll error` message. [#1](https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/1) TLDR: Update your  Streamdeck software
 
+## Any trouble with this plugin ?
+
+Create an issue here https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues
