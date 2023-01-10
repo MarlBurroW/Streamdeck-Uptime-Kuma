@@ -13,10 +13,11 @@ Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elg
     * 🟥 Red -> Down
     * 🟧 Orange -> Paused
     * ⬛ Grey -> Unkown status (waiting for the first status).
-  * The current ping in ms (ping of the last heartbeat).
-  * The average ping in ms (on last 24 hours)
-  * The uptime (%) during last 24 hours.
-  * The uptime (%) during last 30 days.
+  * And any of this information:
+    * The current ping in ms (ping of the last heartbeat).
+    * The average ping in ms (on last 24 hours)
+    * The uptime (%) during last 24 hours.
+    * The uptime (%) during last 30 days.
 * Info displayed can be changed by pressing the button (switch between current ping, average ping 24h, uptime 24h, uptime 30d).
 * Buttons can also be configured to Pause/Resume the monitor on tap.
 * The plugin use the Uptime Kuma SocketIO interface (like the official frontend) so monitor's states are instantly synced with the server.
