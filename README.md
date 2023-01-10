@@ -52,7 +52,7 @@ The bat will build the js/css with webpack (vue-cli), then Package the plugin wi
 
 Download the [latest release](https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/releases/latest), and run the `com.marlburrow.uptime-kuma.streamDeckPlugin` file.
 
-### Troubleshooting
+## Troubleshooting
 
 * CORS error resulting to `xhr poll error` message. [#1](https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/1) TLDR: Update your  Streamdeck software
 
