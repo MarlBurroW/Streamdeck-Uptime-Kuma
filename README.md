@@ -21,15 +21,10 @@ Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elg
 * Buttons can also be configured to Pause/Resume the monitor on tap.
 * The plugin use the Uptime Kuma SocketIO interface (like the official frontend) so monitor's states are instantly synced with the server.
 
-## Feedbacks required
+## Roadmap
 
-The plugin has not been submitted to the Elgato plugin store because I need Feedbacks before.
-
-Don't hesitate to create some issues if you have any problems or have any suggestions to improve this plugin.
-
-Contributions are welcome
-
-## Installation
+* Add long press action binding https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/4
+* Connect the socket only if actions are displayed on the current screen  Connect the socket only if actions are displayed on the current screen 
 
 ### Build from source
 You can build the plugin from source (Only on windows because the Elgato DistributionTool is needed):
