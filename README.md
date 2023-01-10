@@ -23,9 +23,10 @@ Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elg
 
 ## Roadmap
 
-* Add long press action binding https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/4
-* Connect the socket only if actions are displayed on the current screen https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/3
+* Add long press action binding. https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/4
+* Connect the socket only if actions. are displayed on the current screen https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/3
 * Add a group of monitors action button. https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/5
+* Allow to add multiple Kuma instance. https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/6
 
 ## Installation
 
