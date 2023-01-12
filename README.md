@@ -31,15 +31,15 @@ Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elg
 
 ## Installation
 
-### From the Elgato Streamdeck Store
+### Install from the Elgato Streamdeck Store
 
-Plugin submitted to the Elgato team, awaiting publication.
+https://apps.elgato.com/plugins/com.marlburrow.uptime-kuma
 
-### Download the release directly
+### Or download the latest release directly from this repo
 
 Download the [latest release](https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/releases/latest), and run the `com.marlburrow.uptime-kuma.streamDeckPlugin` file.
 
-### Build from source
+### Or build from source
 You can build the plugin from source (Only on windows because the Elgato DistributionTool is needed):
 
 1. Clone the repository
