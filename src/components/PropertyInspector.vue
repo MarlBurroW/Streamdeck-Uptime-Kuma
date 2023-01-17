@@ -75,8 +75,12 @@
 
     <div class="sdpi-item">
       <div class="sdpi-item-label">Monitor</div>
+
+      <span v-if="monitorLoading">Loading monitors...</span>
+      <span v-else-if="monitors.length <= 0">No monitor found</span>
       <select
         :disabled="monitorLoading"
+        v-else
         v-model="monitorId"
         class="sdpi-item-value select"
         @change="saveSettings"
@@ -99,6 +103,7 @@
 
     <div class="sdpi-item">
       <div class="sdpi-item-label">Text</div>
+
       <select
         :disabled="monitorLoading"
         v-model="info"

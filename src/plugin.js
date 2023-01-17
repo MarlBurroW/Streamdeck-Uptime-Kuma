@@ -30,6 +30,12 @@ $SD.on("com.marlburrow.uptime-kuma.monitor.didReceiveSettings", (payload) => {
 
 $SD.on("com.marlburrow.uptime-kuma.monitor.willDisappear", (payload) => {
   delete actions[payload.context];
+
+  if (Object.keys(actions).length <= 0) {
+    if (kuma.isConnected()) {
+      kuma.disconnect();
+    }
+  }
 });
 
 $SD.on("com.marlburrow.uptime-kuma.monitor.willAppear", (payload) => {
@@ -39,6 +45,12 @@ $SD.on("com.marlburrow.uptime-kuma.monitor.willAppear", (payload) => {
     device: payload.device,
     payload: payload.payload,
   };
+
+  if (kuma && !kuma.isConnected() && kuma.hasConnectionParameters()) {
+    kuma.connect();
+  }
+
+  updateActionDisplay(payload.context);
 });
 
 $SD.on("com.marlburrow.uptime-kuma.monitor.keyDown", (payload) => {
@@ -119,6 +131,8 @@ $SD.on("didReceiveGlobalSettings", (settings) => {
     // Connect the module
 
     kuma.connect();
+
+    updateAllActionsDisplay();
 
     kuma.on("connected", () => {
       showOkOnAllActions();

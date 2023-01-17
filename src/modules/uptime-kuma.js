@@ -22,7 +22,9 @@ class UptimeKuma extends EventEmitter {
   }
 
   connect() {
-    this.disconnect();
+    if (this.isConnected()) {
+      this.disconnect();
+    }
 
     this.socket = io(this.url, {
       reconnection: true,
@@ -80,6 +82,14 @@ class UptimeKuma extends EventEmitter {
       this.socket.disconnect();
       this.socket = null;
     }
+  }
+
+  isConnected() {
+    return !!this.socket?.connected;
+  }
+
+  hasConnectionParameters() {
+    return this.url && this.username && this.password;
   }
 
   authenticate() {
