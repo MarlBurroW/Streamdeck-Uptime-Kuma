@@ -1,140 +1,180 @@
 <template>
   <div class="sdpi-wrapper">
-    <details :open="!savedGlobalSettings">
-      <summary>> Global settings</summary>
-      <div class="sdpi-heading">Global settings</div>
 
-      <div v-if="error" class="alert error">
-        {{ error }} <span @click="error = null">X</span>
-      </div>
-      <div v-if="success" class="alert success">
-        {{ success }} <span @click="success = null">X</span>
-      </div>
+
+    <div class="sdpi-heading">Global settings</div>
+
+    <div v-if="error" class="alert error">
+      {{ error }} <span @click="error = null">X</span>
+    </div>
+    <div v-if="success" class="alert success">
+      {{ success }} <span @click="success = null">X</span>
+    </div>
+
+
+    <div v-if="!token">
 
       <div class="sdpi-item">
         <div class="sdpi-item-label">Kuma URL</div>
         <input
-          :disabled="loading"
-          placeholder="https://uptime.example.com"
-          class="sdpi-item-value"
-          type="text"
-          v-model="url"
-          @input="testOk = false"
+            :disabled="loading"
+            placeholder="https://uptime.example.com"
+            class="sdpi-item-value"
+            type="text"
+            v-model="url"
+            @input="testOk = false"
         />
       </div>
 
       <div class="sdpi-item">
         <div class="sdpi-item-label">Username</div>
         <input
-          :disabled="loading"
-          placeholder="Username"
-          class="sdpi-item-value"
-          type="text"
-          v-model="username"
-          @input="testOk = false"
+            :disabled="loading"
+            placeholder="Username"
+            class="sdpi-item-value"
+            type="text"
+            v-model="username"
+            @input="testOk = false"
         />
       </div>
 
       <div class="sdpi-item">
         <div class="sdpi-item-label">Password</div>
         <input
-          :disabled="loading"
-          placeholder="Password"
-          class="sdpi-item-value"
-          type="password"
-          v-model="password"
-          @input="testOk = false"
+            :disabled="loading"
+            placeholder="Password"
+            class="sdpi-item-value"
+            type="password"
+            v-model="password"
+            @input="testOk = false"
+        />
+      </div>
+
+
+      <div class="sdpi-item" v-if="token2faNeeded">
+        <div class="sdpi-item-label">2FA Token</div>
+        <input
+            :disabled="loading"
+            placeholder="Get your 2FA token from your authenticator app"
+            class="sdpi-item-value"
+            type="text"
+            v-model="token2fa"
+            @input="testOk = false"
         />
       </div>
 
       <div class="sdpi-item">
         <button
-          :disabled="loading || !isConnectionFormValid"
-          class="sdpi-item-value"
-          @click="testConnection"
+            :disabled="loading || !isConnectionFormValid"
+            class="sdpi-item-value"
+            @click="testConnection"
         >
           Test*
         </button>
         <button
-          :disabled="loading || !isConnectionFormValid || !testOk"
-          class="sdpi-item-value"
-          @click="saveGlobalSettings"
+            :disabled="loading || !isConnectionFormValid || !testOk"
+            class="sdpi-item-value"
+            @click="saveGlobalSettings"
         >
           Save
         </button>
       </div>
-    </details>
 
-    <div class="sdpi-heading">Monitor settings</div>
-    <div v-if="monitorError" class="alert error">
-      {{ monitorError }} <span @click="monitorError = null">X</span>
     </div>
-    <div v-if="monitorSuccess" class="alert success">
-      {{ monitorSuccess }} <span @click="monitorSuccess = null">X</span>
-    </div>
+    <div v-else>
+      <div class="sdpi-item">
+        <div class="sdpi-item-label">Auth token</div>
+        <input
+            disabled
+            placeholder="Saved auth token"
+            class="sdpi-item-value"
+            type="text"
+            :value="token"
+        />
+      </div>
 
-    <div class="sdpi-item">
-      <div class="sdpi-item-label">Monitor</div>
-
-      <span v-if="monitorLoading">Loading monitors...</span>
-      <span v-else-if="monitors.length <= 0">No monitor found</span>
-      <select
-        :disabled="monitorLoading"
-        v-else
-        v-model="monitorId"
-        class="sdpi-item-value select"
-        @change="saveSettings"
-      >
-        <option :value="null">Select a monitor</option>
-        <option v-for="m in monitors" :key="m.id" :value="m.id">
-          {{ m.name }}
-        </option>
-      </select>
+      <div class="sdpi-item">
       <button
-        :disabled="monitorLoading"
-        class="sdpi-item-value"
-        @click="fetchMonitors"
-        title="Refresh"
-        style="max-width: 50px"
+          class="sdpi-item-value"
+          @click="removeToken"
+          title="Remove token"
       >
-        ↻
+        Remove token
       </button>
+      </div>
     </div>
 
-    <div class="sdpi-item">
-      <div class="sdpi-item-label">Text</div>
+    <div v-if="token">
+      <div class="sdpi-heading">Monitor settings</div>
+      <div v-if="monitorError" class="alert error">
+        {{ monitorError }} <span @click="monitorError = null">X</span>
+      </div>
+      <div v-if="monitorSuccess" class="alert success">
+        {{ monitorSuccess }} <span @click="monitorSuccess = null">X</span>
+      </div>
 
-      <select
-        :disabled="monitorLoading"
-        v-model="info"
-        class="sdpi-item-value select"
-        @change="saveSettings"
-      >
-        <option v-for="info in infos" :key="info.val" :value="info.val">
-          {{ info.name }}
-        </option>
-      </select>
-    </div>
+      <div class="sdpi-item">
+        <div class="sdpi-item-label">Monitor</div>
 
-    <div class="sdpi-item">
-      <div class="sdpi-item-label">Action</div>
-      <select
-        :disabled="monitorLoading"
-        v-model="action"
-        class="sdpi-item-value select"
-        @change="saveSettings"
-      >
-        <option
-          v-for="buttonAction in buttonActions"
-          :key="buttonAction.val"
-          :value="buttonAction.val"
+        <span v-if="monitorLoading">Loading monitors...</span>
+        <span v-else-if="monitors.length <= 0">No monitor found</span>
+        <select
+            :disabled="monitorLoading"
+            v-else
+            v-model="monitorId"
+            class="sdpi-item-value select"
+            @change="saveSettings"
         >
-          {{ buttonAction.name }}
-        </option>
-      </select>
-    </div>
+          <option :value="null">Select a monitor</option>
+          <option v-for="m in monitors" :key="m.id" :value="m.id">
+            {{ m.name }}
+          </option>
+        </select>
+        <button
+            :disabled="monitorLoading"
+            class="sdpi-item-value"
+            @click="fetchMonitors"
+            title="Refresh"
+            style="max-width: 50px"
+        >
+          ↻
+        </button>
+      </div>
 
-    <!-- END OF SDPI-WRAPPER -->
+      <div class="sdpi-item">
+        <div class="sdpi-item-label">Text</div>
+
+        <select
+            :disabled="monitorLoading"
+            v-model="info"
+            class="sdpi-item-value select"
+            @change="saveSettings"
+        >
+          <option v-for="info in infos" :key="info.val" :value="info.val">
+            {{ info.name }}
+          </option>
+        </select>
+      </div>
+
+      <div class="sdpi-item">
+        <div class="sdpi-item-label">Action</div>
+        <select
+            :disabled="monitorLoading"
+            v-model="action"
+            class="sdpi-item-value select"
+            @change="saveSettings"
+        >
+          <option
+              v-for="buttonAction in buttonActions"
+              :key="buttonAction.val"
+              :value="buttonAction.val"
+          >
+            {{ buttonAction.name }}
+          </option>
+        </select>
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -157,31 +197,32 @@ export default {
     this.getGlobalSettings();
 
     this.sd.on(
-      `${this.pi.actionInfo.action}.didReceiveSettings`,
-      (settings) => {
-        if (settings.payload.settings.monitorId) {
-          this.monitorId = settings.payload.settings.monitorId;
+        `${this.pi.actionInfo.action}.didReceiveSettings`,
+        (settings) => {
+          if (settings.payload.settings.monitorId) {
+            this.monitorId = settings.payload.settings.monitorId;
+          }
+          if (settings.payload.settings.info) {
+            this.info = settings.payload.settings.info;
+          }
         }
-        if (settings.payload.settings.info) {
-          this.info = settings.payload.settings.info;
-        }
-      }
     );
 
     this.sd.on("didReceiveGlobalSettings", (settings) => {
+
+
       if (settings.payload.settings) {
         this.initialGlobalSettings = settings.payload.settings;
+      }
+
+      if (settings.payload.settings.token) {
+        this.token = settings.payload.settings.token;
       }
 
       if (settings.payload.settings.url) {
         this.url = settings.payload.settings.url;
       }
-      if (settings.payload.settings.username) {
-        this.username = settings.payload.settings.username;
-      }
-      if (settings.payload.settings.password) {
-        this.password = settings.payload.settings.password;
-      }
+
       if (settings.payload.settings.action) {
         this.action = settings.payload.settings.action;
       }
@@ -189,11 +230,9 @@ export default {
     });
   },
   computed: {
-    savedGlobalSettings() {
+    isSettingsAvailable() {
       return (
-        this.initialGlobalSettings?.url &&
-        this.initialGlobalSettings?.username &&
-        this.initialGlobalSettings?.password
+          !!this.initialGlobalSettings
       );
     },
 
@@ -206,8 +245,17 @@ export default {
   },
   methods: {
     fetchMonitors() {
-      if (this.url && this.username && this.password) {
-        const kuma = new UptimeKuma(this.url, this.username, this.password);
+      if (this.url && this.token) {
+
+        let kuma = null;
+
+        if (this.token) {
+          kuma = new UptimeKuma(this.url, this.token);
+        } else {
+          return;
+        }
+
+
         kuma.connect();
         this.monitorLoading = true;
 
@@ -227,24 +275,38 @@ export default {
       }
     },
 
+    removeToken() {
+      this.token = null;
+      this.tmpToken = null;
+      this.token2faNeeded = false;
+      this.testOk = false;
+    },
+
     testConnection() {
       this.error = null;
       this.success = null;
       this.loading = true;
 
       if (this.url && this.username && this.password) {
-        const kuma = new UptimeKuma(this.url, this.username, this.password);
+        const kuma = new UptimeKuma(this.url);
         kuma.connect();
 
         kuma.on("connected", () => {
-          kuma.authenticate();
+          kuma.getToken(this.username, this.password, this.token2fa);
         });
 
-        kuma.on("authenticated", (token) => {
+        kuma.on("token", (token) => {
           this.success = "Test successful";
           this.loading = false;
           this.testOk = true;
+          this.tmpToken = token;
+
           kuma.disconnect();
+        });
+
+        kuma.on('2faRequired', () => {
+          this.loading = false;
+          this.token2faNeeded = true;
         });
 
         kuma.on("error", (err) => {
@@ -264,14 +326,13 @@ export default {
         action: this.action,
       });
     },
-    getGlobalSettings(settings) {
+    getGlobalSettings() {
       this.pi.getGlobalSettings();
     },
     saveGlobalSettings() {
       const newSettings = {
+        token: this.tmpToken,
         url: this.url,
-        username: this.username,
-        password: this.password,
       };
 
       this.pi.setGlobalSettings(newSettings);
@@ -280,12 +341,18 @@ export default {
 
       this.success = "Connection settings saved";
 
+      this.getGlobalSettings();
+
       this.fetchMonitors();
     },
   },
   data() {
     return {
       initialGlobalSettings: null,
+      token2faNeeded: false,
+      token2fa: null,
+      token: null,
+      tmpToken: null,
       url: null,
       username: null,
       password: null,
@@ -340,9 +407,11 @@ export default {
   justify-content: space-between;
   padding: 8px 15px;
   border-radius: 3px;
+
   span {
     cursor: pointer;
   }
+
   &.success {
     background-color: rgb(165, 245, 165);
     color: rgb(5, 138, 0);

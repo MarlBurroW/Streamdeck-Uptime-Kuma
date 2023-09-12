@@ -1,5 +1,5 @@
-import { io } from "socket.io-client";
-import { EventEmitter } from "events";
+import {io} from "socket.io-client";
+import {EventEmitter} from "events";
 
 class UptimeKuma extends EventEmitter {
   url;
@@ -7,18 +7,18 @@ class UptimeKuma extends EventEmitter {
   password;
   socket;
   token;
+  token2fa;
 
-  constructor(url, username, password) {
+  constructor(url, token) {
     super();
     this.url = url;
-    this.username = username;
-    this.password = password;
+    this.token = token;
+
   }
 
-  setSettings({ url, username, password }) {
+  setSettings({url, token}) {
     this.url = url;
-    this.username = username;
-    this.password = password;
+    this.token = token;
   }
 
   connect() {
@@ -89,33 +89,61 @@ class UptimeKuma extends EventEmitter {
   }
 
   hasConnectionParameters() {
-    return this.url && this.username && this.password;
+    return this.url && this.token;
   }
 
   authenticate() {
-    this.socket.emit(
-      "login",
-      {
-        username: this.username,
-        password: this.password,
-      },
-      (response) => {
-        if (response.ok) {
-          this.token = response.token;
 
-          this.emit("authenticated", this.token);
-        } else {
-          this.emit("error", "authentication failed");
+    this.socket.emit(
+        "loginByToken",
+        this.token,
+        (response) => {
+          if (response.ok) {
+            this.emit("authenticated");
+          } else {
+            if (response.msg) {
+              this.emit("error", response.msg);
+            } else {
+              this.emit("error", "Authentication failed");
+            }
+          }
+        });
+  }
+
+  getToken(username, password, token2fa) {
+
+
+    this.socket.emit(
+        "login",
+        {
+          username: username,
+          password: password,
+          token: token2fa,
+        },
+        (response) => {
+          if (response.ok) {
+            this.token = response.token;
+            this.emit("token", this.token);
+          } else {
+            if (response.tokenRequired) {
+              this.emit("2faRequired")
+            } else if (response.msg) {
+              this.emit("error", response.msg);
+            } else {
+              this.emit("error", "Authentication failed");
+            }
+          }
         }
-      }
     );
   }
 
-  pauseMonitor(monitorID, CB = () => {}) {
+  pauseMonitor(monitorID, CB = () => {
+  }) {
     this.socket.emit("pauseMonitor", parseInt(monitorID), CB);
   }
 
-  resumeMonitor(monitorID, CB = () => {}) {
+  resumeMonitor(monitorID, CB = () => {
+  }) {
     this.socket.emit("resumeMonitor", parseInt(monitorID), CB);
   }
 }

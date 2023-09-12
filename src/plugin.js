@@ -117,15 +117,13 @@ $SD.on("didReceiveGlobalSettings", (settings) => {
   // Check if connection settings are filled before connect the socket
   if (
     globalSettings.url &&
-    globalSettings.username &&
-    globalSettings.password
+    globalSettings.token
   ) {
     // Instantiate a new kuma module.
 
     kuma = new UptimeKuma(
       globalSettings.url,
-      globalSettings.username,
-      globalSettings.password
+      globalSettings.token
     );
 
     // Connect the module
