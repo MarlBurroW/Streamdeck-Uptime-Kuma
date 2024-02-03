@@ -15,7 +15,32 @@
       "SupportedInMultiActions": false,
       "Tooltip": "Display information about a monitor and/or pause/resume it",
       "UUID": "com.marlburrow.uptime-kuma.monitor"
-    }
+    },
+    {
+      "Icon": "images/actions/monitor/action",
+      "Name": "Dial Monitor",
+      "PropertyInspectorPath": "pi.html",
+      "States": [
+          {
+            "Image": "logo",
+            "Title": "Service\r\nName"
+          }
+      ],
+      "Controllers": [
+          "Encoder"
+      ],
+      "Encoder": {
+          "layout": "layouts/layout.json",
+          "Icon": "images/actions/dial-monitor/paused",
+          "TriggerDescription": {
+              "Rotate": "Next/Previous monitor",
+              "Push": "Action (Display next Info or Pause/Resume)"
+          }
+      },
+      "SupportedInMultiActions": false,
+      "Tooltip": "Display information about multiple monitors and/or pause/resume it",
+      "UUID": "com.marlburrow.uptime-kuma.dial-monitor"
+  }
   ],
   "SDKVersion": 2,
   "Author": "Nicolas Varrot (MarlburroW)",
@@ -26,7 +51,7 @@
   "Category": "Uptime Kuma",
   "CategoryIcon": "images/category/category",
   "URL": "https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma",
-  "Version": "1.2.0",
+  "Version": "1.3.0",
   "OS": [
     {
       "Platform": "mac",
