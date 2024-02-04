@@ -21,6 +21,7 @@ Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elg
 * Info displayed can be changed by pressing the button (switch between current ping, average ping 24h, uptime 24h, uptime 30d).
 * Buttons can also be configured to Pause/Resume the monitor on tap.
 * The plugin use the Uptime Kuma SocketIO interface (like the official frontend) so monitor's states are instantly synced with the server.
+* Streamdeck+ support (Thanks to [@totoluto](https://github.com/totoluto))
 
 ## Roadmap
 
