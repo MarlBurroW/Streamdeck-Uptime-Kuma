@@ -4,6 +4,8 @@ Unofficial [Uptime Kuma](https://github.com/louislam/uptime-kuma) plugin for Elg
 
 ![Xnapper-2022-12-31-10 05 27](https://user-images.githubusercontent.com/3024430/210131410-6e23f1eb-adc8-44be-94a7-494435a519f9.png)
 ![IMG_0332](https://user-images.githubusercontent.com/3024430/210131465-d45265e8-5095-466c-bbfe-cef4931330a3.jpeg)
+![CleanShot 2024-02-04 at 17 28 57](https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/assets/3024430/b79910b2-4c84-4116-8ea0-aaf54516b0f2)
+
 
 ## Features
 
