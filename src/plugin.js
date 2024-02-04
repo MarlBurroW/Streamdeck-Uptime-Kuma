@@ -110,17 +110,20 @@ $SD.on("com.marlburrow.uptime-kuma.monitor.keyDown", (payload) => {
 
 // Dial Actions
 
-$SD.on("com.marlburrow.uptime-kuma.dial-monitor.didReceiveSettings", (payload) => {
-  actions[payload.context] = {
-    action: payload.action,
-    context: payload.context,
-    device: payload.device,
-    payload: payload.payload,
-    isEncoder: true,
-  };
+$SD.on(
+  "com.marlburrow.uptime-kuma.dial-monitor.didReceiveSettings",
+  (payload) => {
+    actions[payload.context] = {
+      action: payload.action,
+      context: payload.context,
+      device: payload.device,
+      payload: payload.payload,
+      isEncoder: true,
+    };
 
-  updateActionDisplay(payload.context);
-});
+    updateActionDisplay(payload.context);
+  }
+);
 
 $SD.on("com.marlburrow.uptime-kuma.dial-monitor.willDisappear", (payload) => {
   delete actions[payload.context];
@@ -132,7 +135,7 @@ $SD.on("com.marlburrow.uptime-kuma.dial-monitor.willDisappear", (payload) => {
   }
 });
 
-$SD.on("com.marlburrow.uptime-kuma.dial-monitor.willAppear", (payload) => { 
+$SD.on("com.marlburrow.uptime-kuma.dial-monitor.willAppear", (payload) => {
   actions[payload.context] = {
     action: payload.action,
     context: payload.context,
@@ -147,7 +150,6 @@ $SD.on("com.marlburrow.uptime-kuma.dial-monitor.willAppear", (payload) => {
 
   updateActionDisplay(payload.context);
 });
-
 
 $SD.on("com.marlburrow.uptime-kuma.dial-monitor.dialUp", (payload) => {
   const action = actions[payload.context];
@@ -196,7 +198,6 @@ $SD.on("com.marlburrow.uptime-kuma.dial-monitor.dialUp", (payload) => {
   }
 });
 
-
 $SD.on("com.marlburrow.uptime-kuma.dial-monitor.dialRotate", (payload) => {
   const action = actions[payload.context];
 
@@ -206,16 +207,27 @@ $SD.on("com.marlburrow.uptime-kuma.dial-monitor.dialRotate", (payload) => {
     const monitorIds = Object.keys(monitors);
 
     let currentMonitorId = monitorIds.indexOf(settings.monitorId);
-  
+
     if (usePrevious) {
-      settings.monitorId = monitorIds[currentMonitorId - 1];
+      currentMonitorId--;
     } else {
-      settings.monitorId = monitorIds[currentMonitorId + 1];
+      currentMonitorId++;
     }
+
+    // Endless loop in both direction
+
+    if (currentMonitorId < 0) {
+      currentMonitorId = monitorIds.length - 1;
+    }
+
+    if (currentMonitorId >= monitorIds.length) {
+      currentMonitorId = 0;
+    }
+
+    settings.monitorId = monitorIds[currentMonitorId];
 
     $SD.setSettings(action.context, settings);
     $SD.getSettings(action.context);
-
   }
 });
 
@@ -230,16 +242,10 @@ $SD.on("didReceiveGlobalSettings", (settings) => {
   }
 
   // Check if connection settings are filled before connect the socket
-  if (
-    globalSettings.url &&
-    globalSettings.token
-  ) {
+  if (globalSettings.url && globalSettings.token) {
     // Instantiate a new kuma module.
 
-    kuma = new UptimeKuma(
-      globalSettings.url,
-      globalSettings.token
-    );
+    kuma = new UptimeKuma(globalSettings.url, globalSettings.token);
 
     // Connect the module
 
@@ -373,12 +379,12 @@ function updateActionDisplay(context) {
     if (monitor) {
       if (!monitor.active) {
         if (action.isEncoder) {
-            const payload = {
-              'title': monitor.name,
-              'value': 'Paused',
-              'icon' : 'images/actions/dial-monitor/paused'
-            }
-            $SD.setFeedback(action.context, payload);
+          const payload = {
+            title: monitor.name,
+            value: "Paused",
+            icon: "images/actions/dial-monitor/paused",
+          };
+          $SD.setFeedback(action.context, payload);
         } else {
           $SD.setImage(action.context, statusImage("PAUSED", "", "#D97706"));
         }
@@ -419,10 +425,10 @@ function updateActionDisplay(context) {
 
           if (action.isEncoder) {
             const payload = {
-              'title': monitor.name,
-              'value': text,
-              'icon' : 'images/actions/dial-monitor/online'
-            }
+              title: monitor.name,
+              value: text,
+              icon: "images/actions/dial-monitor/online",
+            };
             $SD.setFeedback(action.context, payload);
           } else {
             $SD.setImage(action.context, statusImage(text, info, "#2bbc5e"));
@@ -430,10 +436,10 @@ function updateActionDisplay(context) {
         } else {
           if (action.isEncoder) {
             const payload = {
-              'title': monitor.name,
-              'value': 'Offline',
-              'icon' : 'images/actions/dial-monitor/offline'
-            }
+              title: monitor.name,
+              value: "Offline",
+              icon: "images/actions/dial-monitor/offline",
+            };
             $SD.setFeedback(action.context, payload);
           } else {
             $SD.setImage(action.context, statusImage("DOWN", null, "red"));
@@ -442,10 +448,10 @@ function updateActionDisplay(context) {
       } else {
         if (action.isEncoder) {
           const payload = {
-            'title': monitor.name,
-            'value': 'Waiting for status',
-            'icon' : 'images/actions/dial-monitor/paused'
-          }
+            title: monitor.name,
+            value: "Waiting for status",
+            icon: "images/actions/dial-monitor/paused",
+          };
           $SD.setFeedback(action.context, payload);
         } else {
           $SD.setImage(action.context, statusImage("Waiting", "for status"));
