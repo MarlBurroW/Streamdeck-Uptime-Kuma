@@ -27,6 +27,19 @@
       </div>
 
       <div class="sdpi-item">
+        <div class="sdpi-item-label">Connection</div>
+        <select
+            :disabled="loading"
+            class="sdpi-item-value select"
+            v-model="transport"
+            @change="testOk = false"
+        >
+          <option value="auto">Auto (polling, then WebSocket)</option>
+          <option value="websocket">WebSocket only</option>
+        </select>
+      </div>
+
+      <div class="sdpi-item">
         <div class="sdpi-item-label">Username</div>
         <input
             :disabled="loading"
@@ -223,6 +236,10 @@ export default {
         this.url = settings.payload.settings.url;
       }
 
+      if (settings.payload.settings.transport) {
+        this.transport = settings.payload.settings.transport;
+      }
+
       if (settings.payload.settings.action) {
         this.action = settings.payload.settings.action;
       }
@@ -250,7 +267,7 @@ export default {
         let kuma = null;
 
         if (this.token) {
-          kuma = new UptimeKuma(this.url, this.token);
+          kuma = new UptimeKuma(this.url, this.token, this.transport);
         } else {
           return;
         }
@@ -288,7 +305,7 @@ export default {
       this.loading = true;
 
       if (this.url && this.username && this.password) {
-        const kuma = new UptimeKuma(this.url);
+        const kuma = new UptimeKuma(this.url, null, this.transport);
         kuma.connect();
 
         kuma.on("connected", () => {
@@ -333,6 +350,7 @@ export default {
       const newSettings = {
         token: this.tmpToken,
         url: this.url,
+        transport: this.transport,
       };
 
       this.pi.setGlobalSettings(newSettings);
@@ -354,6 +372,7 @@ export default {
       token: null,
       tmpToken: null,
       url: null,
+      transport: "auto",
       username: null,
       password: null,
       monitorId: null,

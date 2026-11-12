@@ -245,7 +245,11 @@ $SD.on("didReceiveGlobalSettings", (settings) => {
   if (globalSettings.url && globalSettings.token) {
     // Instantiate a new kuma module.
 
-    kuma = new UptimeKuma(globalSettings.url, globalSettings.token);
+    kuma = new UptimeKuma(
+      globalSettings.url,
+      globalSettings.token,
+      globalSettings.transport
+    );
 
     // Connect the module
 

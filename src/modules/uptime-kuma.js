@@ -8,17 +8,25 @@ class UptimeKuma extends EventEmitter {
   socket;
   token;
   token2fa;
+  transport;
 
-  constructor(url, token) {
+  /**
+   * @param {string} url
+   * @param {string} [token]
+   * @param {string} [transport] "auto" (HTTP long-polling, upgraded to WebSocket)
+   *   or "websocket" (WebSocket only, no HTTP long-polling)
+   */
+  constructor(url, token, transport = "auto") {
     super();
     this.url = url;
     this.token = token;
-
+    this.transport = transport;
   }
 
-  setSettings({url, token}) {
+  setSettings({url, token, transport = "auto"}) {
     this.url = url;
     this.token = token;
+    this.transport = transport;
   }
 
   connect() {
@@ -26,9 +34,19 @@ class UptimeKuma extends EventEmitter {
       this.disconnect();
     }
 
-    this.socket = io(this.url, {
+    const options = {
       reconnection: true,
-    });
+    };
+
+    // Hosts that enforce CORS on the property inspector / plugin page (e.g. OpenDeck)
+    // block socket.io's initial HTTP long-polling requests ("xhr poll error"),
+    // because Uptime Kuma does not send CORS headers in production.
+    // WebSocket connections are not subject to CORS, so allow skipping polling.
+    if (this.transport === "websocket") {
+      options.transports = ["websocket"];
+    }
+
+    this.socket = io(this.url, options);
 
     this.socket.on("disconnect", (reason) => {
       this.emit("disconnect", `Disconnected: ${reason}`);
