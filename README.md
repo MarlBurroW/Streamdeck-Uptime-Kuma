@@ -63,6 +63,7 @@ The bat will build the js/css with webpack (vue-cli), then Package the plugin wi
 ## Troubleshooting
 
 * CORS error resulting to `xhr poll error` message. [#1](https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues/1) TLDR: Update your  Streamdeck software
+  * If your host enforces CORS (e.g. [OpenDeck](https://github.com/nekename/OpenDeck)), set **Connection** to **WebSocket only** in the global settings. If the connection is then refused, your Uptime Kuma instance may be rejecting the WebSocket `Origin`; see `UPTIME_KUMA_WS_ORIGIN_CHECK` in [louislam/uptime-kuma#4210](https://github.com/louislam/uptime-kuma/issues/4210).
 
 Or create an issue here https://github.com/MarlBurroW/Streamdeck-Uptime-Kuma/issues
 
